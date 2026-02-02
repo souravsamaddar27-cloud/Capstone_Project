@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/Solution Items/" />
+  <Folder Name="/web/">
+    <File Path="web/dashboard.js" />
+    <File Path="web/index.html" />
+    <File Path="web/styles.css" />
+    <File Path="web/summary.json" />
+  </Folder>
+  <Project Path="ApiHarvester2/ApiHarvester.csproj" Id="547913c3-7534-47f6-836f-f852eab79970" />
+</Solution>
