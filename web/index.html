@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>API Harvester Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="nav-title">🔎 API Harvester Dashboard</div>
+        <div class="nav-controls">
+            <label for="sourceSelect">Source:</label>
+            <select id="sourceSelect">
+                <option value="">Loading...</option>
+            </select>
+            <label for="fileInput" class="file-label">Upload summary.json:</label>
+            <input type="file" id="fileInput" accept=".json">
+            <button id="resetBtn" class="btn">Reset to fetched data</button>
+        </div>
+    </nav>
+
+    <h1>Insights</h1>
+    <div id="lastUpdated" class="last-updated"></div>
+
+    <!-- Multi-API sections -->
+    <section id="spaceXSection" class="card" hidden>
+        <h2>SpaceX Launches</h2>
+        <div class="card-row">
+            <div class="card-col">
+                <h3>Launches per Year</h3>
+                <canvas id="spxLaunchesChart"></canvas>
+            </div>
+            <div class="card-col">
+                <h3>Success Rate</h3>
+                <canvas id="spxSuccessChart"></canvas>
+            </div>
+        </div>
+        <div id="spxNoData" class="nodata" hidden>No SpaceX data available.</div>
+    </section>
+
+    <section id="coinGeckoSection" class="card" hidden>
+        <h2>Crypto Market (CoinGecko)</h2>
+        <div class="card-row">
+            <div class="card-col">
+                <h3>Top Coins by Market Cap</h3>
+                <canvas id="cgTopCoinsChart"></canvas>
+            </div>
+            <div class="card-col">
+                <h3>24h Change Distribution</h3>
+                <canvas id="cgDistChart"></canvas>
+            </div>
+        </div>
+        <div id="cgNoData" class="nodata" hidden>No CoinGecko data available.</div>
+    </section>
+
+    <section id="openMeteoSection" class="card" hidden>
+        <h2>Weather (OpenMeteo)</h2>
+        <div class="card-row">
+            <div class="card-col">
+                <h3>Hourly Temperature</h3>
+                <canvas id="omHourlyChart"></canvas>
+            </div>
+            <div class="card-col">
+                <h3>Average Temperature</h3>
+                <div id="omAvgTemp" class="metric-box">—</div>
+            </div>
+        </div>
+        <div id="omNoData" class="nodata" hidden>No OpenMeteo data available.</div>
+    </section>
+
+    <!-- Single-API fallback -->
+    <section id="singleApiSection" class="card" hidden>
+        <h2>Single API Insights</h2>
+        <div class="card-row">
+            <div class="card-col">
+                <h3>Top Users by Number of Posts</h3>
+                <canvas id="usersChart"></canvas>
+            </div>
+            <div class="card-col">
+                <h3>Todos Completion</h3>
+                <canvas id="todosChart"></canvas>
+            </div>
+        </div>
+        <div class="card-col">
+            <h3>Most Commented Posts</h3>
+            <ul id="topPosts"></ul>
+        </div>
+        <div id="singleNoData" class="nodata" hidden>No single-API data available.</div>
+    </section>
+
+    <footer>
+        <p>Made by Rishita Srivastava — Capstone Project © 2026</p>
+    </footer>
+    <script src="dashboard.js"></script>
+</body>
+</html>
