@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medtronic Telemetry Dashboard | SmartSync Analytics</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header fade-in">
+            <div class="header-content">
+                <div class="logo-section">
+                    <h1>🫀 Medtronic SmartSync</h1>
+                    <p class="subtitle">Telemetry Analytics Dashboard</p>
+                </div>
+                <div class="header-controls">
+                    <div class="status-badge" id="statusBadge">
+                        <span class="status-dot"></span>
+                        <span id="statusText">Waiting for data...</span>
+                    </div>
+                    <div class="last-update">
+                        Last Update: <span id="lastUpdateTime">Never</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Control Panel -->
+<section class="control-panel fade-in">
+    <div class="control-group">
+        <button id="loadDataBtn" class="btn btn-primary" type="button">
+            <span class="btn-icon">🔄</span>
+            Reload Data
+        </button>
+        <div class="info-badge">
+            <span class="info-icon">📊</span>
+            <span>Telemetry Analysis Dashboard</span>
+        </div>
+    </div>
+</section>
+
+        <!-- Statistics Overview Cards -->
+        <section id="statsSection" class="stats-grid hidden">
+            <div class="stat-card stat-card-primary slide-up" style="animation-delay: 0.1s">
+                <div class="stat-icon">📈</div>
+                <div class="stat-content">
+                    <h3>Total Events</h3>
+                    <p class="stat-value" id="totalEvents">0</p>
+                    <span class="stat-change" id="totalEventsChange"></span>
+                </div>
+            </div>
+            
+            <div class="stat-card stat-card-warning slide-up" style="animation-delay: 0.2s">
+                <div class="stat-icon pulse">⚠️</div>
+                <div class="stat-content">
+                    <h3>Critical Errors</h3>
+                    <p class="stat-value" id="criticalCount">0</p>
+                    <span class="stat-change" id="criticalChange"></span>
+                </div>
+            </div>
+            
+            <div class="stat-card stat-card-success slide-up" style="animation-delay: 0.3s">
+                <div class="stat-icon">🔌</div>
+                <div class="stat-content">
+                    <h3>Active Devices</h3>
+                    <p class="stat-value" id="deviceCount">0</p>
+                    <span class="stat-change" id="deviceChange"></span>
+                </div>
+            </div>
+            
+            <div class="stat-card stat-card-info slide-up" style="animation-delay: 0.4s">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-content">
+                    <h3>Processing Time</h3>
+                    <p class="stat-value stat-small" id="processingTime">0ms</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Alert Banner -->
+        <div id="alertBanner" class="alert-banner hidden">
+            <span class="alert-icon">🚨</span>
+            <span class="alert-text" id="alertText"></span>
+            <button class="alert-close" onclick="closeAlert()">×</button>
+        </div>
+
+        <!-- Charts Section -->
+        <section id="chartsSection" class="charts-section hidden">
+            <!-- Row 1: Error Analysis -->
+            <div class="chart-row">
+                <div class="chart-container zoom-in" style="animation-delay: 0.5s">
+                    <div class="chart-header">
+                        <h2 class="chart-title">🔴 Top Error Types</h2>
+                        <span class="chart-badge" id="errorBadge">0 errors</span>
+                    </div>
+                    <canvas id="errorChart"></canvas>
+                </div>
+                
+                <div class="chart-container zoom-in" style="animation-delay: 0.6s">
+                    <div class="chart-header">
+                        <h2 class="chart-title">📊 Severity Distribution</h2>
+                        <span class="chart-badge" id="severityBadge">0 events</span>
+                    </div>
+                    <canvas id="severityChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Row 2: Device Statistics -->
+            <div class="chart-row">
+                <div class="chart-container chart-container-wide zoom-in" style="animation-delay: 0.7s">
+                    <div class="chart-header">
+                        <h2 class="chart-title">🔌 Device Event Statistics</h2>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="legend-color" style="background: rgba(59, 130, 246, 0.8)"></span> Total Events</span>
+                            <span class="legend-item"><span class="legend-color" style="background: rgba(239, 68, 68, 0.8)"></span> Errors</span>
+                            <span class="legend-item"><span class="legend-color" style="background: rgba(245, 158, 11, 0.8)"></span> Warnings</span>
+                        </div>
+                    </div>
+                    <canvas id="deviceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Device Details Table -->
+            <div class="table-container zoom-in" style="animation-delay: 0.8s">
+                <div class="chart-header">
+                    <h2 class="chart-title">📋 Device Details</h2>
+                    <input type="text" id="deviceSearch" class="search-input" placeholder="🔍 Search devices...">
+                </div>
+                <div class="table-wrapper">
+                    <table id="deviceTable">
+                        <thead>
+                            <tr>
+                                <th>Device ID</th>
+                                <th>Total Events</th>
+                                <th>Errors</th>
+                                <th>Warnings</th>
+                                <th>Last Seen</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deviceTableBody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Generated: <span id="generatedDate">-</span></p>
+            <p>Medtronic SmartSync Capstone Project | Real-Time Telemetry Monitoring System</p>
+        </footer>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

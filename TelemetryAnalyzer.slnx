@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Telemetryanalyzer.Tests/Telemetryanalyzer.Tests.csproj" DisplayName="TelemetryAnalyzer.Tests" Id="14ac2f24-cc0e-4068-9ce9-6e10754d3c28" />
+  <Project Path="TelemetryAnalyzer/TelemetryAnalyzer.csproj" />
+</Solution>
