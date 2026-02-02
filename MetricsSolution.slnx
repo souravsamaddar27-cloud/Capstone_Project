@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Metrics.Api/Metrics.Api.csproj" />
+    <Project Path="src/Metrics.Core/Metrics.Core.csproj" />
+    <Project Path="src/Metrics.Persistence/Metrics.Persistence.csproj" />
+  </Folder>
+</Solution>
