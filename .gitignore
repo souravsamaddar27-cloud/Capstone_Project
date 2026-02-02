@@ -1,10 +1,15 @@
 # Visual Studio
 .vs/
-
-# Build outputs
 bin/
 obj/
 
-# Environment / secrets
-.env
-appsettings.Development.json
+# User-specific
+*.user
+*.suo
+
+# Build outputs
+Debug/
+Release/
+
+# NuGet
+packages/

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{547913C3-7534-47F6-836F-F852EAB79970}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ApiHarvester2</RootNamespace>
+    <AssemblyName>ApiHarvester2</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Models\Post.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\Comment.cs" />
+    <Compile Include="Models\Todo.cs" />
+    <Compile Include="Models\SummaryReport.cs" />
+    <Compile Include="Services\IApiClient.cs" />
+    <Compile Include="Services\ApiClient.cs" />
+    <Compile Include="Services\IDataProcessor.cs" />
+    <Compile Include="Services\DataProcessor.cs" />
+    <Compile Include="Services\IReportWriter.cs" />
+    <Compile Include="Services\ReportWriter.cs" />
+    <Compile Include="Tests\Assert.cs" />
+    <Compile Include="Tests\DataProcessorTests.cs" />
+    <Compile Include="Tests\ApiClientTests.cs" />
+    <Compile Include="Tests\TestRunner.cs" />
+    <Compile Include="Tests\HttpFakeHandler.cs" />
+    <Compile Include="Tests\SpaceXSourceTests.cs" />
+    <Compile Include="Tests\OpenMeteoSourceTests.cs" />
+    <Compile Include="Tests\MultiSourceProcessorTests.cs" />
+    <Compile Include="Tests\CoinGeckoSourceTests.cs" />
+    <Compile Include="Models\MultiSourceModels.cs" />
+    <Compile Include="Models\SourceConfig.cs" />
+    <Compile Include="Models\MultiSourceModels.cs" />
+    <Compile Include="Services\IApiSource.cs" />
+    <Compile Include="Services\Sources\SpaceXSource.cs" />
+    <Compile Include="Services\Sources\CoinGeckoSource.cs" />
+    <Compile Include="Services\Sources\OpenMeteoSource.cs" />
+    <Compile Include="Services\MultiSourceProcessor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,0 +1,141 @@
+﻿body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f6f8fa;
+    margin: 0;
+    color: #333;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #1976d2 70%, #42a5f5 100%);
+    color: #fff;
+    padding: 14px 18px;
+    box-shadow: 0 2px 8px rgba(25,118,210,0.12);
+}
+
+.nav-title {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+    .nav-controls select, .nav-controls input[type="file"], .nav-controls .btn {
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: none;
+        font-size: 0.95em;
+    }
+
+.btn {
+    background: #1976d2;
+    color: #fff;
+    cursor: pointer;
+}
+
+    .btn:hover {
+        background: #1565c0;
+    }
+
+h1 {
+    text-align: center;
+    margin: 16px 0 6px;
+    color: #1976d2;
+    font-size: 2.0em;
+}
+
+.last-updated {
+    text-align: center;
+    color: #555;
+    font-size: 0.98em;
+    margin-bottom: 12px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(25,118,210,0.06);
+    padding: 18px;
+    margin: 14px auto;
+    max-width: 1100px;
+}
+
+.card-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.card-col {
+    flex: 1 1 420px;
+    min-width: 320px;
+}
+
+h2 {
+    color: #1565c0;
+    margin: 8px 0 12px;
+}
+
+h3 {
+    color: #1565c0;
+    margin: 6px 0 10px;
+}
+
+canvas {
+    display: block;
+    width: 100% !important;
+    height: 260px !important;
+    background: #e3f2fd;
+    border-radius: 8px;
+    padding: 6px;
+}
+
+.metric-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 260px;
+    background: #e3f2fd;
+    border-radius: 8px;
+    font-size: 2.0em;
+    color: #1565c0;
+}
+
+ul#topPosts {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+    ul#topPosts li {
+        background: #e3f2fd;
+        border-radius: 6px;
+        padding: 10px 14px;
+        margin-bottom: 8px;
+        font-size: 1.02em;
+        box-shadow: 0 2px 8px rgba(25,118,210,0.03);
+    }
+
+.nodata {
+    color: #b00020;
+    background: #ffe0e0;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+footer {
+    background: #1976d2;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 0.95em;
+    margin-top: 18px;
+}
