@@ -1,0 +1,15 @@
+﻿{
+  "source": "Telemetry Log Analyzer",
+  "recordCount": 50000,
+  "errorCount": 9000,
+  "errorRate": 0.18,
+  "distinctDevices": 10,
+  "averageEventsPerDevice": 5000,
+  "maxEventsPerDevice": 7200,
+  "severityDistribution": {
+    "Low": 12000,
+    "Medium": 15000,
+    "High": 18000,
+    "Critical": 5000
+  }
+}

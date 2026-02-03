@@ -1,0 +1,95 @@
+{
+  "totalEvents": 101200,
+  "topErrors": {
+    "Telemetry signal weak": 1659,
+    "Pacing threshold exceeded": 1617,
+    "Battery voltage low": 1604,
+    "Sensor malfunction": 1600,
+    "Firmware update required": 1592,
+    "Communication timeout": 1575,
+    "Lead impedance high": 1564,
+    "Device overheating": 1558,
+    "Abnormal heart rhythm detected": 1548,
+    "Memory checksum error": 1518
+  },
+  "severityDistribution": {
+    "High": 17498,
+    "Critical": 17806,
+    "Medium": 32702,
+    "Low": 33194
+  },
+  "deviceStatistics": {
+    "PM-2024-007": {
+      "deviceId": "PM-2024-007",
+      "eventCount": 10223,
+      "errorCount": 1789,
+      "warningCount": 3304,
+      "lastSeen": "2025-12-28T02:50:51"
+    },
+    "PM-2024-008": {
+      "deviceId": "PM-2024-008",
+      "eventCount": 10140,
+      "errorCount": 1706,
+      "warningCount": 3332,
+      "lastSeen": "2025-12-28T02:50:50"
+    },
+    "PM-2024-006": {
+      "deviceId": "PM-2024-006",
+      "eventCount": 10088,
+      "errorCount": 1768,
+      "warningCount": 3247,
+      "lastSeen": "2025-12-28T02:50:47"
+    },
+    "PM-2024-009": {
+      "deviceId": "PM-2024-009",
+      "eventCount": 10084,
+      "errorCount": 1754,
+      "warningCount": 3315,
+      "lastSeen": "2025-12-28T02:50:46"
+    },
+    "PM-2024-002": {
+      "deviceId": "PM-2024-002",
+      "eventCount": 10159,
+      "errorCount": 1697,
+      "warningCount": 3377,
+      "lastSeen": "2025-12-28T02:50:51"
+    },
+    "PM-2024-003": {
+      "deviceId": "PM-2024-003",
+      "eventCount": 10087,
+      "errorCount": 1778,
+      "warningCount": 3322,
+      "lastSeen": "2025-12-28T02:50:47"
+    },
+    "PM-2024-001": {
+      "deviceId": "PM-2024-001",
+      "eventCount": 10264,
+      "errorCount": 1800,
+      "warningCount": 3361,
+      "lastSeen": "2025-12-28T02:50:43"
+    },
+    "PM-2024-005": {
+      "deviceId": "PM-2024-005",
+      "eventCount": 9959,
+      "errorCount": 1697,
+      "warningCount": 3279,
+      "lastSeen": "2025-12-28T02:50:42"
+    },
+    "PM-2024-004": {
+      "deviceId": "PM-2024-004",
+      "eventCount": 10013,
+      "errorCount": 1752,
+      "warningCount": 3224,
+      "lastSeen": "2025-12-28T02:50:51"
+    },
+    "PM-2024-010": {
+      "deviceId": "PM-2024-010",
+      "eventCount": 10183,
+      "errorCount": 1758,
+      "warningCount": 3312,
+      "lastSeen": "2025-12-28T02:50:49"
+    }
+  },
+  "generatedAt": "2026-02-02T15:28:50.5672741+05:30",
+  "processingTimeMs": 49.0073
+}
