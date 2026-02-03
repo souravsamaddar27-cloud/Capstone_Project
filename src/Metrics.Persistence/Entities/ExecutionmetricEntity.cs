@@ -17,7 +17,8 @@ public sealed class ExecutionMetricEntity
 
     public string ActivityName { get; set; } = default;
 
-    public long ExecutionTimeMs { get; set; }
+    public double ExecutionTimeMs { get; set; }
+
 
     public long MemoryBytes { get; set; }
 

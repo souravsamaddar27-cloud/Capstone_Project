@@ -8,8 +8,9 @@ public sealed class MetricSummaryModel
     public string SubActivityName { get; init; } = string.Empty;
 
     public double AverageExecutionMs { get; init; }
-    public long MinExecutionMs { get; init; }
-    public long MaxExecutionMs { get; init; }
+    public double MinExecutionMs { get; init; }
+    public double MaxExecutionMs { get; init; }
+
 
     public double AverageMemoryBytes { get; init; }
     public long MinMemoryBytes { get; init; }

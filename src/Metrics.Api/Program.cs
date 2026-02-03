@@ -41,29 +41,29 @@ app.UseSwaggerUI();
 app.MapControllers();
 
 
-// ============================================================
-// GET: Aggregated Summary
-// ============================================================
-//app.MapGet("/api/metrics/summary", async (
-//    IMetricsService service,
-//    ActivityType? activityType,
-//    CancellationToken ct) =>
-//{
-//    var result = await service.GetSummaryAsync(activityType, ct);
-//    return Results.Ok(result);
-//});
-app.MapGet("/api/test", async (IMetricsRecorder recorder) =>
+ //============================================================
+ //GET: Aggregated Summary
+ //============================================================
+app.MapGet("/api/metrics/summary", async (
+    IMetricsService service,
+    ActivityType ? activityType,
+    CancellationToken ct) =>
 {
-    await recorder.MeasureAsync(
-        ActivityType.Telemetry,
-        "Test_Module",
-        async () =>
-        {
-            await Task.Delay(200);
-        });
-
-    return Results.Ok("Recorded");
+    var result = await service.GetSummaryAsync(activityType, ct);
+return Results.Ok(result);
 });
+//app.MapGet("/api/test", async (IMetricsRecorder recorder) =>
+//{
+//    await recorder.MeasureAsync(
+//        ActivityType.Telemetry,
+//        "Test_Module",
+//        async () =>
+//        {
+//            await Task.Delay(200);
+//        });
+
+//    return Results.Ok("Recorded");
+//});
 
 
 

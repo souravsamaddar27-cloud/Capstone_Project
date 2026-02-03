@@ -4,9 +4,10 @@ namespace Metrics.Core.Interfaces;
 
 public interface IMetricsRecorder
 {
-    Task MeasureAsync(
+    Task<T> MeasureAsync<T>(
         ActivityType activityType,
         string subActivityName,
-        Func<Task> action,
+        Func<Task<T>> action,
         CancellationToken cancellationToken = default);
+
 }

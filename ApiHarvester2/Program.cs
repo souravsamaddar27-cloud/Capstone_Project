@@ -9,6 +9,13 @@ using ApiHarvester.Models;
 using ApiHarvester.Services;
 using ApiHarvester.Tests; // remove if you don't have the in-project test harness
 using System.Net.Http.Headers;
+using Metrics.Core.Enums;
+using Metrics.Core.Interfaces;
+using Metrics.Persistence.Db;
+using Metrics.Persistence.Services;
+using Microsoft.EntityFrameworkCore;
+using ApiHarvester.Services;
+
 
 class Program
 {
@@ -23,8 +30,14 @@ class Program
 
         // 2) Compute robust paths relative to exe (bin\Debug\...)
         var exeBase = AppDomain.CurrentDomain.BaseDirectory;
-        var webPath = Path.GetFullPath(Path.Combine(exeBase, "..", "..", "..", "web", "summary.json"));
-        var sourcesPath = Path.GetFullPath(Path.Combine(exeBase, "..", "..", "..", "sources.json"));
+
+        var projectRoot = Path.GetFullPath(
+            Path.Combine(exeBase, "..", "..", "..", ".."));
+
+        var webPath = Path.Combine(projectRoot, "web", "summary.json");
+
+        var sourcesPath = Path.Combine(projectRoot, "sources.json");
+
 
         Console.WriteLine("Exe Base: " + exeBase);
         Console.WriteLine("Web summary.json path: " + webPath);
@@ -68,78 +81,105 @@ class Program
     }
 
     // ---------------- Multi-API flow ----------------
-    private static async Task RunMultiApiFlow(List<SourceConfig> configs, string webPath)
+    private static async Task RunMultiApiFlow(
+     List<SourceConfig> configs,
+     string webPath)
     {
-        var adapterPairs = new List<Tuple<IApiSource, SourceConfig>>();
+        var options = new DbContextOptionsBuilder<MetricsDbContext>()
+            .UseNpgsql(
+    "Host=ep-lively-feather-a8pmfu4c.eastus2.azure.neon.tech;" +
+    "Port=5432;" +
+    "Database=neondb;" +
+    "Username=neondb;" +
+    "Password=npg_ZW6jz5KGQmYs;" +
+    "SSL Mode=Require;" +
+    "Trust Server Certificate=true"
+)
+            .Options;
+
+        using var db = new MetricsDbContext(options);
+        IMetricsRecorder recorder = new MetricsRecorder(db);
+
+        using var http = new HttpClient
+        {
+            Timeout = TimeSpan.FromSeconds(10)
+        };
+
+        // =====================
+        // 1️⃣ FETCH
+        // =====================
+
+        var adapters = new List<(IApiSource adapter, SourceConfig config)>();
+
         foreach (var cfg in configs)
         {
-            var type = (cfg.type ?? string.Empty).ToLowerInvariant();
-            IApiSource adapter = null;
+            var type = (cfg.type ?? "").ToLowerInvariant();
+
+            IApiSource? adapter = null;
 
             if (type == "spacex") adapter = new SpaceXSource();
             else if (type == "coingecko") adapter = new CoinGeckoSource();
             else if (type == "openmeteo") adapter = new OpenMeteoSource();
 
             if (adapter != null)
-                adapterPairs.Add(new Tuple<IApiSource, SourceConfig>(adapter, cfg));
-            else
-                Console.WriteLine("Unsupported source type: '" + cfg.type + "'. Skipping.");
+                adapters.Add((adapter, cfg));
         }
 
-        if (adapterPairs.Count == 0)
-        {
-            Console.WriteLine("No supported adapters created. Falling back to single-API.");
-            await RunSingleApiFlow(webPath);
-            return;
-        }
-
-        using (var http = new HttpClient { Timeout = TimeSpan.FromSeconds(10) })
-        {
-            // Set default headers to avoid 403 on some APIs
-            http.DefaultRequestHeaders.Accept.Clear();
-            http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            // User-Agent is required by many APIs; format must be valid
-            http.DefaultRequestHeaders.UserAgent.Clear();
-            http.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("ApiHarvester", "1.0"));
-
-            // Local helper: safe fetch that catches and logs errors
-            async Task<ApiResult> TryFetchAsync(IApiSource adapter, SourceConfig cfg)
+        var results = await recorder.MeasureAsync<ApiResult[]>(
+            ActivityType.Api,
+            "Fetch_All",
+            async () =>
             {
-                try
-                {
-                    return await adapter.FetchAsync(http, cfg);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"WARN: Fetch failed for '{cfg.name}' ({cfg.type}): {ex.Message}");
-                    return null; // skip this source
-                }
-            }
+                var tasks = adapters
+                    .Select(pair => pair.adapter.FetchAsync(http, pair.config))
+                    .ToArray();
 
-            // Start all fetches in parallel, catch per-source errors
-            var tasks = adapterPairs.Select(p => TryFetchAsync(p.Item1, p.Item2)).ToArray();
-            var results = await Task.WhenAll(tasks);
+                return await Task.WhenAll(tasks);
+            });
 
-            // Filter out failed sources
-            var okResults = results.Where(r => r != null).ToList();
-            if (okResults.Count == 0)
+        // =====================
+        // 2️⃣ PROCESS
+        // =====================
+
+        var summary = await recorder.MeasureAsync<SummaryReport>(
+            ActivityType.Api,
+            "Process_All",
+            async () =>
             {
-                Console.WriteLine("All sources failed. Falling back to single-API.");
-                await RunSingleApiFlow(webPath);
-                return;
-            }
+                var validResults = results
+                    .Where(r => r != null)
+                    .ToList();
 
-            // Aggregate and write summary.json
-            var summary = MultiSourceProcessor.Aggregate(okResults);
-            Directory.CreateDirectory(Path.GetDirectoryName(webPath));
-            var json = JsonConvert.SerializeObject(summary, Formatting.Indented);
-            File.WriteAllText(webPath, json);
-            Console.WriteLine("Multi-source summary.json generated at: " + webPath);
-        }
+                return MultiSourceProcessor.Aggregate(validResults);
+            });
+
+        // =====================
+        // 3️⃣ REPORT WRITE
+        // =====================
+
+        await recorder.MeasureAsync<bool>(
+            ActivityType.Api,
+            "Report_Write",
+            async () =>
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(webPath)!);
+
+                var json = JsonConvert.SerializeObject(summary, Formatting.Indented);
+                File.WriteAllText(webPath, json);
+
+                return true;
+            });
     }
+
+
+
 
     private static async Task RunSingleApiFlow(string webPath)
     {
-        throw new NotImplementedException();
+        Console.WriteLine("Single API flow not implemented yet.");
+        await Task.CompletedTask;
     }
+
 }
+
+ 

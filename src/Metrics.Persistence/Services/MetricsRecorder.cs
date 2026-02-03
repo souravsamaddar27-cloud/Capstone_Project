@@ -33,7 +33,7 @@ public sealed class MetricsRecorder : IMetricsRecorder
         {
             ActivityType = activityType,
             ActivityName = subActivityName,
-            ExecutionTimeMs = stopwatch.ElapsedMilliseconds,
+            ExecutionTimeMs = stopwatch.Elapsed.TotalMilliseconds,
             MemoryBytes = afterMemory - beforeMemory,
             ExecutedAtUtc = DateTime.UtcNow
         };
@@ -41,4 +41,33 @@ public sealed class MetricsRecorder : IMetricsRecorder
         _db.ExecutionMetrics.Add(entity);
         await _db.SaveChangesAsync(cancellationToken);
     }
+    public async Task<T> MeasureAsync<T>(
+    ActivityType activityType,
+    string subActivityName,
+    Func<Task<T>> action,
+    CancellationToken cancellationToken = default)
+    {
+        var beforeMemory = GC.GetTotalMemory(true);
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+        T result = await action();
+
+        stopwatch.Stop();
+        var afterMemory = GC.GetTotalMemory(true);
+
+        var entity = new ExecutionMetricEntity
+        {
+            ActivityType = activityType,
+            ActivityName = subActivityName,
+            ExecutionTimeMs = stopwatch.ElapsedMilliseconds,
+            MemoryBytes = afterMemory - beforeMemory,
+            ExecutedAtUtc = DateTime.UtcNow
+        };
+
+        _db.ExecutionMetrics.Add(entity);
+        await _db.SaveChangesAsync(cancellationToken);
+
+        return result;
+    }
+
 }

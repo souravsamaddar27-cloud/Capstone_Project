@@ -61,4 +61,5 @@ public sealed class MetricsService : IMetricsService
         _db.ExecutionMetrics.Add(entity);
         await _db.SaveChangesAsync(cancellationToken);
     }
+
 }
