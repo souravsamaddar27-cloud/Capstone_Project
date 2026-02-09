@@ -18,7 +18,7 @@ namespace TelemetryAnalyzer
     {
         static async Task Main(string[] args)
         {
-             Console.WriteLine("╔════════════════════════════════════════════════════════╗");
+            Console.WriteLine("╔════════════════════════════════════════════════════════╗");
             Console.WriteLine("║     Medtronic Telemetry Log Analyzer v2.0             ║");
             Console.WriteLine("║     SmartSync Capstone Project                         ║");
             Console.WriteLine("╚════════════════════════════════════════════════════════╝");
@@ -133,31 +133,33 @@ namespace TelemetryAnalyzer
         {
             try
             {
-                string[] possibleWebPaths = { "web", "Web", "../web", "../Web", "../../web", "../../Web", "../../../web", "../../../Web" };
-                string webFolder = null;
+                // Go from bin/Debug/net10.0 → project root
+                var exeBase = AppDomain.CurrentDomain.BaseDirectory;
 
-                foreach (var path in possibleWebPaths)
+                var projectRoot = Path.GetFullPath(
+                    Path.Combine(exeBase, "..", "..", "..", ".."));
+
+                var dashboardPath = Path.Combine(projectRoot, "metrics-dashboard");
+
+                if (!Directory.Exists(dashboardPath))
                 {
-                    if (Directory.Exists(path))
-                    {
-                        webFolder = path;
-                        break;
-                    }
+                    Console.WriteLine("Dashboard folder not found.");
+                    return;
                 }
 
-                if (webFolder != null)
-                {
-                    var webReportPath = Path.Combine(webFolder, "summary-report.json");
-                    File.Copy(sourcePath, webReportPath, true);
-                    Console.WriteLine($"✓ Dashboard JSON file copied to web folder");
-                }
+                var destination = Path.Combine(dashboardPath, "summary-report.json");
+
+                File.Copy(sourcePath, destination, true);
+
+                Console.WriteLine("✓ Telemetry JSON copied to metrics-dashboard");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"⚠ Could not copy to web folder: {ex.Message}");
+                Console.WriteLine($"Copy failed: {ex.Message}");
             }
 
             await Task.CompletedTask;
         }
+
     }
 }

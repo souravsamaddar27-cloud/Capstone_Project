@@ -34,7 +34,7 @@ class Program
         var projectRoot = Path.GetFullPath(
             Path.Combine(exeBase, "..", "..", "..", ".."));
 
-        var webPath = Path.Combine(projectRoot, "web", "summary.json");
+        var webPath = Path.Combine(projectRoot, "metrics-dashboard", "summary.json");
 
         var sourcesPath = Path.Combine(projectRoot, "sources.json");
 
