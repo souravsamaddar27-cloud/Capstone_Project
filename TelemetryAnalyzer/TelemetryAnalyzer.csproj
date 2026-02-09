@@ -12,4 +12,9 @@
     <Folder Include="Output\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\src\Metrics.Core\Metrics.Core.csproj" />
+    <ProjectReference Include="..\src\Metrics.Persistence\Metrics.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>

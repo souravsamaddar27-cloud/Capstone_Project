@@ -4,6 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TelemetryAnalyzer.Services;
+using Metrics.Core.Enums;
+using Metrics.Core.Interfaces;
+using Metrics.Persistence.Db;
+using Metrics.Persistence.Services;
+using Microsoft.EntityFrameworkCore;
+using TelemetryAnalyzer.Models;
+
 
 namespace TelemetryAnalyzer
 {
@@ -18,6 +25,21 @@ namespace TelemetryAnalyzer
             Console.WriteLine();
 
             var stopwatch = Stopwatch.StartNew();
+            var options = new DbContextOptionsBuilder<MetricsDbContext>()
+    .UseNpgsql(
+        "Host=ep-lively-feather-a8pmfu4c.eastus2.azure.neon.tech;" +
+        "Port=5432;" +
+        "Database=neondb;" +
+        "Username=neondb;" +
+        "Password=npg_ZW6jz5KGQmYs;" +
+        "SSL Mode=Require;" +
+        "Trust Server Certificate=true;"+
+         "KeepAlive=30;")
+    .Options;
+
+            using var db = new MetricsDbContext(options);
+            IMetricsRecorder recorder = new MetricsRecorder(db);
+
 
             try
             {
@@ -40,20 +62,43 @@ namespace TelemetryAnalyzer
                 Console.WriteLine("⏳ Processing telemetry data asynchronously...\n");
 
                 // Step 1: Read logs asynchronously
-                var events = await logReader.ReadLogsAsync(config.InputFilePath);
+                var events = await recorder.MeasureAsync(
+                    ActivityType.Telemetry,
+                    "Read_Logs",
+                    async () =>
+                    {
+                        return await logReader.ReadLogsAsync(config.InputFilePath);
+                    });
                 Console.WriteLine($"✓ Loaded {config.GetProcessedCount():N0} telemetry events");
 
                 // Step 2: Aggregate data using LINQ
                 Console.WriteLine("📊 Aggregating data with LINQ queries...");
-                var report = aggregator.AggregateData(events);
+                var report = await recorder.MeasureAsync<SummaryReport>(
+                    ActivityType.Telemetry,
+                    "Aggregate_Data",
+                    () =>
+                    {
+                        var result = aggregator.AggregateData(events);
+                        return Task.FromResult(result);
+                    });
+
+
                 Console.WriteLine($"✓ Analysis complete in {report.ProcessingTimeMs:F2}ms");
 
                 // Step 3: Write report asynchronously
                 Console.WriteLine($"💾 Writing JSON summary report...");
-                await reportWriter.WriteReportAsync(report, config.OutputFilePath);
+                await recorder.MeasureAsync<object>(
+     ActivityType.Telemetry,
+     "Report_Write",
+     async () =>
+     {
+         await reportWriter.WriteReportAsync(report, config.OutputFilePath);
+         await CopyToWebFolder(config.OutputFilePath);
+         return null!;
+     });
 
-                // Copy to web folder for dashboard
-                await CopyToWebFolder(config.OutputFilePath);
+
+
 
                 stopwatch.Stop();
 
@@ -76,8 +121,8 @@ namespace TelemetryAnalyzer
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"\n✗ ERROR: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                Console.WriteLine("\n✗ ERROR:");
+                Console.WriteLine(ex.ToString());
             }
 
             Console.WriteLine("\nPress any key to exit...");
